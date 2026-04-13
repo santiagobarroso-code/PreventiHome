@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.preventihome.ui.auth.LoginFragment"
+        android:label="Login">
+        <action
+            android:id="@+id/action_login_to_patientHome"
+            app:destination="@id/patientHomeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_login_to_fisioHome"
+            app:destination="@id/fisioHomeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/patientHomeFragment"
+        android:name="com.example.preventihome.ui.patient.PatientHomeFragment"
+        android:label="Home Paciente"/>
+
+    <fragment
+        android:id="@+id/fisioHomeFragment"
+        android:name="com.example.preventihome.ui.physio.FisioHomeFragment"
+        android:label="Home Fisio"/>
+
+</navigation>
