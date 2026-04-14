@@ -1,4 +1,4 @@
-package com.preventihome.ui.auth
+package com.example.preventihome.ui.auth
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,13 +18,13 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.preventihome.R
-import com.preventihome.databinding.FragmentLoginBinding
-import com.preventihome.domain.model.User
-import com.preventihome.viewmodel.AuthUiState
-import com.preventihome.viewmodel.AuthViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import com.example.preventihome.R
+import com.example.preventihome.databinding.FragmentLoginBinding
+import com.example.preventihome.domain.model.User
+import com.example.preventihome.viewmodel.AuthUiState
+import com.example.preventihome.viewmodel.AuthViewModel
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {

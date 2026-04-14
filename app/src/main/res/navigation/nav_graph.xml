@@ -9,13 +9,18 @@
         android:name="com.example.preventihome.ui.auth.LoginFragment"
         android:label="Login">
         <action
-            android:id="@+id/action_login_to_patientHome"
+            android:id="@+id/action_loginFragment_to_patientHomeFragment"
             app:destination="@id/patientHomeFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true"/>
         <action
-            android:id="@+id/action_login_to_fisioHome"
+            android:id="@+id/action_loginFragment_to_fisioHomeFragment"
             app:destination="@id/fisioHomeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_loginFragment_to_adminFragment"
+            app:destination="@id/patientHomeFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true"/>
     </fragment>
