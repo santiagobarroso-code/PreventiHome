@@ -52,11 +52,11 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
 
     // Firebase BOM
-    implementation(platform("com.google.firebase:firebase-bom:34.12.0"))
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation("com.google.firebase:firebase-firestore-ktx")
-    implementation("com.google.firebase:firebase-storage-ktx")
-    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation(platform("com.google.firebase:firebase-bom:32.7.4"))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-messaging")
     implementation("com.google.firebase:firebase-analytics")
 
     // Google Sign-In
