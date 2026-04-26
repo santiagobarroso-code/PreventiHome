@@ -160,13 +160,13 @@ class LoginFragment : Fragment() {
 
     // ── Navegación según rol ─────────────────────────────────────────────────
     private fun navigateByRole(user: User) {
+        viewModel.resetState()  // ← esto evita que MainActivity reaccione también
         val destination = when (user.rol) {
             "fisio"  -> R.id.action_loginFragment_to_fisioHomeFragment
             "admin"  -> R.id.action_loginFragment_to_adminFragment
-            else     -> R.id.action_loginFragment_to_patientHomeFragment  // "paciente"
+            else     -> R.id.action_loginFragment_to_patientHomeFragment
         }
         findNavController().navigate(destination)
-        viewModel.resetState()
     }
 
     // ── Estados de UI ────────────────────────────────────────────────────────
