@@ -71,4 +71,18 @@ class AuthViewModel @Inject constructor(
     fun hasSavedCredentials(): Boolean = authRepository.hasSavedCredentials()
     fun resetState() { _uiState.value = AuthUiState.Idle }
     fun logout() { authRepository.logout() }
+
+
+    fun register(email: String, password: String, nombre: String) {
+        if (email.isBlank() || password.isBlank() || nombre.isBlank()) {
+            _uiState.value = AuthUiState.Error("Todos los campos son obligatorios")
+            return
+        }
+        viewModelScope.launch {
+            _uiState.value = AuthUiState.Loading
+            authRepository.register(email, password, nombre)
+                .onSuccess { _uiState.value = AuthUiState.Success(it) }
+                .onFailure { _uiState.value = AuthUiState.Error(it.message ?: "Error al registrar") }
+        }
+    }
 }
