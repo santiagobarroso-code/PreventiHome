@@ -20,6 +20,20 @@
             app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_loginFragment_to_adminFragment"
+            app:destination="@id/adminFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_loginFragment_to_registerFragment"
+            app:destination="@id/registerFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.example.preventihome.ui.auth.RegisterFragment"
+        android:label="Registro">
+        <action
+            android:id="@+id/action_registerFragment_to_patientHomeFragment"
             app:destination="@id/patientHomeFragment"
             app:popUpTo="@id/loginFragment"
             app:popUpToInclusive="true"/>
@@ -28,11 +42,90 @@
     <fragment
         android:id="@+id/patientHomeFragment"
         android:name="com.example.preventihome.ui.patient.PatientHomeFragment"
-        android:label="Home Paciente"/>
+        android:label="Home Paciente">
+        <action
+            android:id="@+id/action_patientHome_to_ejercicios"
+            app:destination="@id/ejerciciosFragment"/>
+        <action
+            android:id="@+id/action_patientHome_to_historial"
+            app:destination="@id/historialFragment"/>
+        <action
+            android:id="@+id/action_patientHome_to_perfil"
+            app:destination="@id/perfilFragment"/>
+        <action
+            android:id="@+id/action_patientHome_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
     <fragment
         android:id="@+id/fisioHomeFragment"
         android:name="com.example.preventihome.ui.physio.FisioHomeFragment"
-        android:label="Home Fisio"/>
+        android:label="Home Fisio">
+        <action
+            android:id="@+id/action_fisioHome_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/adminFragment"
+        android:name="com.example.preventihome.ui.admin.AdminFragment"
+        android:label="Administrador">
+        <action
+            android:id="@+id/action_admin_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/ejerciciosFragment"
+        android:name="com.example.preventihome.ui.patient.EjerciciosFragment"
+        android:label="Ejercicios">
+        <action
+            android:id="@+id/action_ejercicios_to_detalle"
+            app:destination="@id/ejercicioDetalleFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/ejercicioDetalleFragment"
+        android:name="com.example.preventihome.ui.patient.EjercicioDetalleFragment"
+        android:label="Detalle">
+        <argument android:name="ejercicioId" app:argType="string"/>
+        <action
+            android:id="@+id/action_detalle_to_evaluacion"
+            app:destination="@id/evaluacionFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/evaluacionFragment"
+        android:name="com.example.preventihome.ui.patient.EvaluacionFragment"
+        android:label="Evaluación">
+        <argument android:name="ejercicioId"     app:argType="string"/>
+        <argument android:name="ejercicioNombre" app:argType="string"/>
+        <argument android:name="ejercicioZona"   app:argType="string"/>
+        <argument android:name="duracion"        app:argType="integer"/>
+        <argument android:name="series"          app:argType="integer"/>
+        <argument android:name="repeticiones"    app:argType="integer"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/historialFragment"
+        android:name="com.example.preventihome.ui.patient.HistorialFragment"
+        android:label="Historial"/>
+
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.example.preventihome.ui.patient.PerfilFragment"
+        android:label="Perfil">
+        <action
+            android:id="@+id/action_perfil_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"/>
+    </fragment>
 
 </navigation>
