@@ -14,10 +14,30 @@ class FirebaseAuthSource @Inject constructor(
 ) {
     val currentUser get() = auth.currentUser
 
+    // Determina el rol según el dominio del correo
+    private fun rolPorDominio(email: String): String = when {
+        email.endsWith("@admin.preventihome.com") -> "admin"
+        email.endsWith("@fisio.preventihome.com") -> "fisio"
+        else -> "paciente"
+    }
+
     suspend fun signInWithEmail(email: String, password: String): User {
         val result = auth.signInWithEmailAndPassword(email, password).await()
         val fbUser = result.user ?: throw Exception("Error al autenticar")
-        return firestoreSource.getUser(fbUser.uid)
+        // Intentar leer perfil existente, si no existe crearlo
+        return try {
+            firestoreSource.getUser(fbUser.uid)
+        } catch (e: Exception) {
+            val rol = rolPorDominio(fbUser.email ?: "")
+            val newUser = User(
+                uid = fbUser.uid,
+                email = fbUser.email ?: "",
+                nombre = "",
+                rol = rol
+            )
+            firestoreSource.createUser(newUser)
+            newUser
+        }
     }
 
     suspend fun signInWithGoogle(idToken: String): User {
@@ -27,7 +47,12 @@ class FirebaseAuthSource @Inject constructor(
         return try {
             firestoreSource.getUser(fbUser.uid)
         } catch (e: Exception) {
-            val newUser = User(uid = fbUser.uid, email = fbUser.email ?: "")
+            val newUser = User(
+                uid = fbUser.uid,
+                email = fbUser.email ?: "",
+                nombre = fbUser.displayName ?: "",
+                rol = "paciente"
+            )
             firestoreSource.createUser(newUser)
             newUser
         }
@@ -36,7 +61,13 @@ class FirebaseAuthSource @Inject constructor(
     suspend fun register(email: String, password: String, nombre: String): User {
         val result = auth.createUserWithEmailAndPassword(email, password).await()
         val fbUser = result.user ?: throw Exception("Error al registrar")
-        val newUser = User(uid = fbUser.uid, email = email, nombre = nombre)
+        val rol = rolPorDominio(email)
+        val newUser = User(
+            uid = fbUser.uid,
+            email = email,
+            nombre = nombre,
+            rol = rol
+        )
         firestoreSource.createUser(newUser)
         return newUser
     }

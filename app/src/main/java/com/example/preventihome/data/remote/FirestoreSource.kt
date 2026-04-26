@@ -11,6 +11,7 @@ class FirestoreSource @Inject constructor(private val db: FirebaseFirestore) {
 
     suspend fun getUser(uid: String): User {
         val doc = db.collection("users").document(uid).get().await()
+        if (!doc.exists()) throw Exception("Usuario no encontrado")
         return User(
             uid = uid,
             email = doc.getString("email") ?: "",
@@ -26,5 +27,38 @@ class FirestoreSource @Inject constructor(private val db: FirebaseFirestore) {
             "rol" to user.rol
         )
         db.collection("users").document(user.uid).set(data).await()
+    }
+
+    suspend fun updateUserRol(uid: String, nuevoRol: String) {
+        db.collection("users").document(uid)
+            .update("rol", nuevoRol)
+            .await()
+    }
+
+    suspend fun getAllUsers(): List<User> {
+        val snapshot = db.collection("users").get().await()
+        return snapshot.documents.map { doc ->
+            User(
+                uid = doc.id,
+                email = doc.getString("email") ?: "",
+                nombre = doc.getString("nombre") ?: "",
+                rol = doc.getString("rol") ?: "paciente"
+            )
+        }
+    }
+
+    suspend fun getUsersByRol(rol: String): List<User> {
+        val snapshot = db.collection("users")
+            .whereEqualTo("rol", rol)
+            .get()
+            .await()
+        return snapshot.documents.map { doc ->
+            User(
+                uid = doc.id,
+                email = doc.getString("email") ?: "",
+                nombre = doc.getString("nombre") ?: "",
+                rol = doc.getString("rol") ?: "paciente"
+            )
+        }
     }
 }
