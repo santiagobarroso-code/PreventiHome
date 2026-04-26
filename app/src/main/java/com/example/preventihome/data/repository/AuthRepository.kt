@@ -19,6 +19,12 @@ class AuthRepository @Inject constructor(
         user
     }
 
+    suspend fun register(email: String, password: String, nombre: String): Result<User> = runCatching {
+        val user = authSource.register(email, password, nombre)
+        prefs.saveCredentials(email, password)
+        user
+    }
+
     suspend fun loginWithGoogle(idToken: String): Result<User> = runCatching {
         authSource.signInWithGoogle(idToken)
     }
