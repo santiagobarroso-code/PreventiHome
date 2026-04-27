@@ -44,6 +44,9 @@
         android:name="com.example.preventihome.ui.patient.PatientHomeFragment"
         android:label="Home Paciente">
         <action
+            android:id="@+id/action_patientHome_to_consultas"
+            app:destination="@id/consultasPacienteFragment"/>
+        <action
             android:id="@+id/action_patientHome_to_ejercicios"
             app:destination="@id/ejerciciosFragment"/>
         <action
@@ -68,6 +71,9 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_fisioHome_to_crearConsulta"
+            app:destination="@id/crearConsultaFragment"/>
     </fragment>
 
     <fragment
@@ -126,6 +132,34 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
+    </fragment>
+
+    <!-- Consultas del paciente -->
+    <fragment
+        android:id="@+id/consultasPacienteFragment"
+        android:name="com.example.preventihome.ui.patient.ConsultasPacienteFragment"
+        android:label="Mis consultas">
+        <action
+            android:id="@+id/action_consultasPaciente_to_detalleConsulta"
+            app:destination="@id/detalleConsultaFragment"/>
+    </fragment>
+
+    <!-- Detalle de consulta para el paciente -->
+    <fragment
+        android:id="@+id/detalleConsultaFragment"
+        android:name="com.example.preventihome.ui.patient.DetalleConsultaFragment"
+        android:label="Detalle consulta">
+        <argument android:name="consultaId" app:argType="string"/>
+    </fragment>
+
+    <!-- Crear consulta — usado por el fisioterapeuta -->
+    <fragment
+        android:id="@+id/crearConsultaFragment"
+        android:name="com.example.preventihome.ui.physio.CrearConsultaFragment"
+        android:label="Nueva consulta">
+        <argument android:name="pacienteId"     app:argType="string"/>
+        <argument android:name="pacienteNombre" app:argType="string"/>
+        <argument android:name="pacienteEmail"  app:argType="string"/>
     </fragment>
 
 </navigation>

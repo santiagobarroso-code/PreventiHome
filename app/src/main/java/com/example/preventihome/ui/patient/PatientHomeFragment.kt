@@ -47,7 +47,12 @@ class PatientHomeFragment : Fragment() {
         binding.cardPerfil.setOnClickListener {
             findNavController().navigate(R.id.action_patientHome_to_perfil)
         }
+        binding.cardConsultas.setOnClickListener {
+            findNavController().navigate(R.id.action_patientHome_to_consultas)
+        }
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

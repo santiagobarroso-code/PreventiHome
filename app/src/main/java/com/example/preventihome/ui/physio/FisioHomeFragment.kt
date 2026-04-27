@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import androidx.core.os.bundleOf
 
 @AndroidEntryPoint
 class FisioHomeFragment : Fragment() {
@@ -61,11 +62,14 @@ class FisioHomeFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = PacienteAdapter { paciente ->
-            Toast.makeText(
-                requireContext(),
-                "Paciente: ${paciente.email}",
-                Toast.LENGTH_SHORT
-            ).show()
+            findNavController().navigate(
+                R.id.action_fisioHome_to_crearConsulta,
+                bundleOf(
+                    "pacienteId"     to paciente.uid,
+                    "pacienteNombre" to paciente.nombre,
+                    "pacienteEmail"  to paciente.email
+                )
+            )
         }
         binding.rvPacientes.layoutManager = LinearLayoutManager(requireContext())
         binding.rvPacientes.adapter = adapter
