@@ -133,4 +133,21 @@ class ConsultaRepository @Inject constructor(
         ejerciciosIds  = (get("ejerciciosIds") as? List<String>) ?: emptyList(),
         estado         = getString("estado") ?: "activa"
     )
+
+    /**
+     * Obtiene la consulta activa más reciente del paciente autenticado.
+     * Se usa para determinar la patología actual y filtrar ejercicios.
+     *
+     * @return Result<Consulta?> la consulta activa más reciente, o null si no hay ninguna
+     */
+    suspend fun getConsultaActivaActual(): Result<Consulta?> = runCatching {
+        val snapshot = db.collection("consultas")
+            .whereEqualTo("pacienteId", userId)
+            .whereEqualTo("estado", "activa")
+            .orderBy("fecha", Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .await()
+        snapshot.documents.firstOrNull()?.toConsulta()
+    }
 }

@@ -19,6 +19,20 @@ import com.example.preventihome.viewmodel.EjercicioViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+/**
+ * Pantalla del paciente para explorar el catálogo de ejercicios.
+ *
+ * Funcionalidades:
+ * - Ver todos los ejercicios activos desde Firestore
+ * - Filtrar por zona corporal mediante chips
+ * - Filtrar por patología activa si el paciente tiene una consulta activa
+ * - Filtrar por ejercicios recomendados
+ * - Navegar al detalle de un ejercicio para ejecutarlo
+ *
+ * Si el paciente tiene una consulta activa con patología asignada,
+ * el chip "Mi patología" aparece resaltado y pre-seleccionado
+ * para mostrar los ejercicios más relevantes para su condición.
+ */
 @AndroidEntryPoint
 class EjerciciosFragment : Fragment() {
 
@@ -26,6 +40,9 @@ class EjerciciosFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: EjercicioViewModel by viewModels()
     private lateinit var adapter: EjercicioAdapter
+
+    /** Patología activa del paciente (null si no tiene consulta activa) */
+    private var patologiaActiva: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -38,20 +55,22 @@ class EjerciciosFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupFiltros()
-        setupObserver()
+        setupObservers()
         setupToolbar()
     }
 
     private fun setupToolbar() {
-        binding.toolbar.setNavigationIcon(R.drawable.ic_back)
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
     }
 
+    /**
+     * Configura el RecyclerView con el adapter de ejercicios.
+     * Al tocar un ejercicio navega al detalle pasando su ID.
+     */
     private fun setupRecyclerView() {
         adapter = EjercicioAdapter { ejercicio ->
-            // Navegar al detalle pasando el ID del ejercicio
             findNavController().navigate(
                 R.id.action_ejercicios_to_detalle,
                 bundleOf("ejercicioId" to ejercicio.id)
@@ -61,6 +80,10 @@ class EjerciciosFragment : Fragment() {
         binding.rvEjercicios.adapter = adapter
     }
 
+    /**
+     * Configura los chips de filtro.
+     * El chip de patología solo aparece si el paciente tiene consulta activa.
+     */
     private fun setupFiltros() {
         binding.chipTodos.setOnClickListener {
             deselectAllChips()
@@ -71,6 +94,11 @@ class EjerciciosFragment : Fragment() {
             deselectAllChips()
             binding.chipRecomendados.isChecked = true
             viewModel.filtrarRecomendados()
+        }
+        binding.chipPatologia.setOnClickListener {
+            deselectAllChips()
+            binding.chipPatologia.isChecked = true
+            patologiaActiva?.let { viewModel.filtrarPorPatologia(it) }
         }
         binding.chipRodilla.setOnClickListener {
             deselectAllChips()
@@ -99,17 +127,12 @@ class EjerciciosFragment : Fragment() {
         }
     }
 
-    private fun deselectAllChips() {
-        binding.chipTodos.isChecked = false
-        binding.chipRecomendados.isChecked = false
-        binding.chipRodilla.isChecked = false
-        binding.chipLumbar.isChecked = false
-        binding.chipCervical.isChecked = false
-        binding.chipHombro.isChecked = false
-        binding.chipTobillo.isChecked = false
-    }
-
-    private fun setupObserver() {
+    /**
+     * Observa tanto el estado de ejercicios como la patología activa.
+     * Si detecta una patología activa muestra y configura el chip correspondiente.
+     */
+    private fun setupObservers() {
+        // Observar lista de ejercicios
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
@@ -139,6 +162,42 @@ class EjerciciosFragment : Fragment() {
                 }
             }
         }
+
+        // Observar patología activa del paciente
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.patologiaActiva.collect { patologia ->
+                    patologiaActiva = patologia
+                    if (patologia != null) {
+                        // Mostrar chip con el nombre legible de la patología
+                        val nombreLegible = patologia
+                            .replace("_", " ")
+                            .replaceFirstChar { it.uppercaseChar() }
+                        binding.chipPatologia.text = nombreLegible
+                        binding.chipPatologia.visibility = View.VISIBLE
+
+                        // Pre-seleccionar automáticamente el chip de patología
+                        deselectAllChips()
+                        binding.chipPatologia.isChecked = true
+                        viewModel.filtrarPorPatologia(patologia)
+                    } else {
+                        binding.chipPatologia.visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
+
+    /** Desmarca todos los chips de filtro */
+    private fun deselectAllChips() {
+        binding.chipTodos.isChecked       = false
+        binding.chipRecomendados.isChecked = false
+        binding.chipPatologia.isChecked   = false
+        binding.chipRodilla.isChecked     = false
+        binding.chipLumbar.isChecked      = false
+        binding.chipCervical.isChecked    = false
+        binding.chipHombro.isChecked      = false
+        binding.chipTobillo.isChecked     = false
     }
 
     override fun onDestroyView() {

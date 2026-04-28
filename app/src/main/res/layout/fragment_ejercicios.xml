@@ -31,6 +31,19 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
+            <!-- Chip de patología activa — visible solo si el paciente tiene consulta activa -->
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipPatologia"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
+                android:text="Mi patología"
+                android:checkable="true"
+                android:visibility="gone"
+                style="@style/Widget.MaterialComponents.Chip.Filter"
+                app:chipBackgroundColor="@color/secondary"
+                app:checkedIconTint="@color/white"/>
+
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipTodos"
                 android:layout_width="wrap_content"
