@@ -37,6 +37,8 @@ class PatientHomeFragment : Fragment() {
         // El toolbar solo muestra el título por ahora
     }
 
+
+
     private fun setupClickListeners() {
         binding.cardEjercicios.setOnClickListener {
             findNavController().navigate(R.id.action_patientHome_to_ejercicios)
@@ -49,6 +51,9 @@ class PatientHomeFragment : Fragment() {
         }
         binding.cardConsultas.setOnClickListener {
             findNavController().navigate(R.id.action_patientHome_to_consultas)
+        }
+        binding.cardCitas.setOnClickListener {
+            findNavController().navigate(R.id.action_patientHome_to_misCitas)
         }
     }
 

@@ -47,6 +47,9 @@
             android:id="@+id/action_patientHome_to_consultas"
             app:destination="@id/consultasPacienteFragment"/>
         <action
+            android:id="@+id/action_patientHome_to_misCitas"
+            app:destination="@id/misCitasFragment"/>
+        <action
             android:id="@+id/action_patientHome_to_ejercicios"
             app:destination="@id/ejerciciosFragment"/>
         <action
@@ -72,8 +75,38 @@
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
         <action
-            android:id="@+id/action_fisioHome_to_crearConsulta"
+            android:id="@+id/action_fisioHome_to_citasPendientes"
+            app:destination="@id/citasFisioFragment"/>
+        <action
+            android:id="@+id/action_fisioHome_to_historialPaciente"
+            app:destination="@id/historialFisioFragment"/>
+    </fragment>
+
+    <!-- Historial de consultas de un paciente visto por el fisio -->
+    <fragment
+        android:id="@+id/historialFisioFragment"
+        android:name="com.example.preventihome.ui.physio.HistorialFisioFragment"
+        android:label="Historial paciente">
+        <argument android:name="pacienteId"     app:argType="string"/>
+        <argument android:name="pacienteNombre" app:argType="string"/>
+        <argument android:name="pacienteEmail"  app:argType="string"/>
+        <action
+            android:id="@+id/action_historialFisio_to_detalleConsultaFisio"
+            app:destination="@id/detalleConsultaFisioFragment"/>
+        <action
+            android:id="@+id/action_historialFisio_to_crearConsulta"
             app:destination="@id/crearConsultaFragment"/>
+    </fragment>
+
+    <!-- Detalle de consulta editable por el fisio -->
+    <fragment
+        android:id="@+id/detalleConsultaFisioFragment"
+        android:name="com.example.preventihome.ui.physio.DetalleConsultaFisioFragment"
+        android:label="Detalle consulta">
+        <argument android:name="consultaId"     app:argType="string"/>
+        <argument android:name="pacienteId"     app:argType="string"/>
+        <argument android:name="pacienteNombre" app:argType="string"/>
+        <argument android:name="pacienteEmail"  app:argType="string"/>
     </fragment>
 
     <fragment
@@ -160,6 +193,33 @@
         <argument android:name="pacienteId"     app:argType="string"/>
         <argument android:name="pacienteNombre" app:argType="string"/>
         <argument android:name="pacienteEmail"  app:argType="string"/>
+        <argument android:name="citaId"         app:argType="string" android:defaultValue=""/>
+    </fragment>
+
+    <!-- Citas del paciente -->
+    <fragment
+        android:id="@+id/misCitasFragment"
+        android:name="com.example.preventihome.ui.patient.MisCitasFragment"
+        android:label="Mis citas">
+        <action
+            android:id="@+id/action_misCitas_to_agendarCita"
+            app:destination="@id/agendarCitaFragment"/>
+    </fragment>
+
+    <!-- Formulario agendar cita -->
+    <fragment
+        android:id="@+id/agendarCitaFragment"
+        android:name="com.example.preventihome.ui.patient.AgendarCitaFragment"
+        android:label="Agendar cita"/>
+
+    <!-- Citas pendientes del fisio -->
+    <fragment
+        android:id="@+id/citasFisioFragment"
+        android:name="com.example.preventihome.ui.physio.CitasFisioFragment"
+        android:label="Citas pendientes">
+        <action
+            android:id="@+id/action_citasFisio_to_crearConsulta"
+            app:destination="@id/crearConsultaFragment"/>
     </fragment>
 
 </navigation>

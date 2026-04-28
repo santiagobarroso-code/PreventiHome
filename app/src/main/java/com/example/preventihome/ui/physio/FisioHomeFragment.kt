@@ -62,11 +62,14 @@ class FisioHomeFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = PacienteAdapter { paciente ->
+            val nombre = paciente.nombre.ifEmpty {
+                paciente.email.substringBefore("@")
+            }
             findNavController().navigate(
-                R.id.action_fisioHome_to_crearConsulta,
+                R.id.action_fisioHome_to_historialPaciente,
                 bundleOf(
                     "pacienteId"     to paciente.uid,
-                    "pacienteNombre" to paciente.nombre,
+                    "pacienteNombre" to nombre,
                     "pacienteEmail"  to paciente.email
                 )
             )
@@ -113,6 +116,9 @@ class FisioHomeFragment : Fragment() {
         binding.btnLogout.setOnClickListener {
             authViewModel.logout()
             findNavController().navigate(R.id.action_fisioHome_to_login)
+        }
+        binding.btnVerCitas.setOnClickListener {
+            findNavController().navigate(R.id.action_fisioHome_to_citasPendientes)
         }
     }
 

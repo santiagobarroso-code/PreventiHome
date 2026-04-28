@@ -79,17 +79,36 @@ class AdminFragment : Fragment() {
     }
 
     /**
-     * Inicializa el RecyclerView con el adapter y sus callbacks.
-     * - onPromover: muestra confirmación antes de cambiar rol
-     * - onRevocar: muestra confirmación antes de revocar
+     * Inicializa el RecyclerView con el adapter.
+     * Muestra diálogo de confirmación antes de eliminar.
      */
     private fun setupRecyclerView() {
         adapter = UsuarioAdminAdapter(
-            onPromover = { user -> confirmarPromover(user) },
-            onRevocar  = { user -> confirmarRevocar(user) }
+            onEliminar = { user -> confirmarEliminar(user) }
         )
         binding.rvUsuarios.layoutManager = LinearLayoutManager(requireContext())
         binding.rvUsuarios.adapter = adapter
+    }
+
+    /**
+     * Muestra diálogo de confirmación antes de eliminar un usuario.
+     * La operación elimina el perfil de Firestore — la cuenta de Auth
+     * permanece pero el usuario no puede acceder a la app.
+     *
+     * @param user Usuario a eliminar
+     */
+    private fun confirmarEliminar(user: User) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Eliminar usuario")
+            .setMessage(
+                "¿Deseas eliminar a ${user.email}?\n\n" +
+                        "Esta acción eliminará su perfil de la plataforma."
+            )
+            .setPositiveButton("Eliminar") { _, _ ->
+                adminViewModel.eliminarUsuario(user.uid)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     /**
@@ -214,28 +233,63 @@ class AdminFragment : Fragment() {
     }
 
     /**
-     * Muestra un diálogo para crear un nuevo usuario desde el panel admin.
-     * El admin especifica nombre, correo, contraseña y rol.
-     * La contraseña es temporal — el usuario debería cambiarla después.
+     * Diálogo para crear un nuevo usuario.
+     * El dominio del correo se autocompleta según el rol seleccionado:
+     * - Fisio → @fisio.preventihome.com
+     * - Admin → @admin.preventihome.com
+     * - Paciente → campo libre
      */
     private fun mostrarDialogoNuevoUsuario() {
-        // Inflar layout personalizado del diálogo
         val dialogView = LayoutInflater.from(requireContext())
             .inflate(R.layout.dialog_nuevo_usuario, null)
 
-        val etNombre   = dialogView.findViewById<EditText>(R.id.etNombreDialog)
-        val etEmail    = dialogView.findViewById<EditText>(R.id.etEmailDialog)
-        val etPassword = dialogView.findViewById<EditText>(R.id.etPasswordDialog)
-        val spinnerRol = dialogView.findViewById<Spinner>(R.id.spinnerRol)
+        val etNombre   = dialogView.findViewById<android.widget.EditText>(R.id.etNombreDialog)
+        val etEmail    = dialogView.findViewById<android.widget.EditText>(R.id.etEmailDialog)
+        val etPassword = dialogView.findViewById<android.widget.EditText>(R.id.etPasswordDialog)
+        val spinnerRol = dialogView.findViewById<android.widget.Spinner>(R.id.spinnerRol)
 
-        // Configurar opciones del spinner de rol
-        val roles = listOf("paciente", "fisio")
-        val spinnerAdapter = ArrayAdapter(
+        // Opciones de rol disponibles
+        val roles = listOf("paciente", "fisio", "admin")
+        val spinnerAdapter = android.widget.ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
-            roles
+            roles.map { it.replaceFirstChar { c -> c.uppercaseChar() } }
         )
         spinnerRol.adapter = spinnerAdapter
+
+        // Autocompletar dominio del correo según el rol seleccionado
+        spinnerRol.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: android.widget.AdapterView<*>?,
+                view: android.view.View?,
+                position: Int,
+                id: Long
+            ) {
+                val rolSeleccionado = roles[position]
+                val textoActual = etEmail.text.toString()
+
+                // Extraer solo la parte local del correo (antes del @)
+                val parteLocal = if (textoActual.contains("@")) {
+                    textoActual.substringBefore("@")
+                } else {
+                    textoActual
+                }
+
+                // Asignar dominio según rol
+                val dominioSugerido = when (rolSeleccionado) {
+                    "fisio"  -> "@fisio.preventihome.com"
+                    "admin"  -> "@admin.preventihome.com"
+                    else     -> ""
+                }
+
+                if (dominioSugerido.isNotEmpty()) {
+                    etEmail.setText("$parteLocal$dominioSugerido")
+                    // Mover cursor al inicio para que el usuario edite la parte local
+                    etEmail.setSelection(parteLocal.length)
+                }
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
+        }
 
         AlertDialog.Builder(requireContext())
             .setTitle("Crear nuevo usuario")
@@ -244,9 +298,8 @@ class AdminFragment : Fragment() {
                 val nombre   = etNombre.text.toString().trim()
                 val email    = etEmail.text.toString().trim()
                 val password = etPassword.text.toString().trim()
-                val rol      = spinnerRol.selectedItem.toString()
+                val rol      = roles[spinnerRol.selectedItemPosition]
 
-                // Validar campos antes de crear
                 if (nombre.isEmpty() || email.isEmpty() || password.isEmpty()) {
                     Toast.makeText(
                         requireContext(),
@@ -256,7 +309,9 @@ class AdminFragment : Fragment() {
                     return@setPositiveButton
                 }
 
-                crearNuevoUsuario(nombre, email, password, rol)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    adminViewModel.crearUsuario(nombre, email, password, rol)
+                }
             }
             .setNegativeButton("Cancelar", null)
             .show()

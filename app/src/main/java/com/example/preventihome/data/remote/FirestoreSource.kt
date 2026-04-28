@@ -61,4 +61,28 @@ class FirestoreSource @Inject constructor(private val db: FirebaseFirestore) {
             )
         }
     }
+
+
+    /**
+     * Elimina el documento de un usuario en Firestore.
+     * La cuenta de Firebase Auth permanece pero sin perfil
+     * el usuario no puede operar en la plataforma.
+     *
+     * @param uid UID del usuario a eliminar
+     */
+    suspend fun deleteUser(uid: String) {
+        db.collection("users").document(uid).delete().await()
+    }
+
+    /**
+     * Actualiza el nombre de un usuario en Firestore.
+     *
+     * @param uid         UID del usuario
+     * @param nuevoNombre Nombre actualizado
+     */
+    suspend fun updateUserNombre(uid: String, nuevoNombre: String) {
+        db.collection("users").document(uid)
+            .update("nombre", nuevoNombre)
+            .await()
+    }
 }

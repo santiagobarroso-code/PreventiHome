@@ -11,40 +11,34 @@ import com.example.preventihome.domain.model.User
 
 /**
  * Adapter para la lista de usuarios en el panel de administrador.
- * Muestra cada usuario con su rol y un botón de acción contextual:
- * - Paciente → botón "Hacer fisio"
- * - Fisio    → botón "Revocar"
- * - Admin    → sin botón de acción
  *
- * @param onPromover Callback cuando el admin promueve a un paciente a fisio
- * @param onRevocar  Callback cuando el admin revoca el rol de fisio
+ * Muestra cada usuario con su información y un botón de eliminar.
+ * Los admins no tienen botón de eliminar para evitar eliminar la cuenta propia.
+ *
+ * @param onEliminar Callback cuando el admin quiere eliminar un usuario
  */
 class UsuarioAdminAdapter(
-    private val onPromover: (User) -> Unit,
-    private val onRevocar: (User) -> Unit
+    private val onEliminar: (User) -> Unit
 ) : ListAdapter<User, UsuarioAdminAdapter.ViewHolder>(DiffCallback()) {
 
     inner class ViewHolder(private val binding: ItemUsuarioAdminBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         /**
-         * Vincula los datos del usuario con las vistas del item.
-         * Configura el badge de rol con color diferenciado y
-         * el botón de acción según el rol actual del usuario.
+         * Vincula los datos del usuario con las vistas.
+         * Configura el badge de rol con color diferenciado.
+         * Solo pacientes y fisios tienen botón de eliminar.
          */
         fun bind(user: User) {
-            // Mostrar nombre o parte del correo si no hay nombre
             val nombre = user.nombre.ifEmpty {
                 user.email.substringBefore("@")
             }
             binding.tvNombre.text = nombre
             binding.tvEmail.text = user.email
+            binding.tvAvatar.text =
+                nombre.firstOrNull()?.uppercaseChar()?.toString() ?: "U"
 
-            // Inicial para el avatar circular
-            binding.tvAvatar.text = nombre
-                .firstOrNull()?.uppercaseChar()?.toString() ?: "U"
-
-            // Configurar badge de rol con color diferenciado
+            // Badge de rol con color diferenciado por tipo
             binding.tvRol.text = when (user.rol) {
                 "fisio"  -> "Fisioterapeuta"
                 "admin"  -> "Administrador"
@@ -59,22 +53,14 @@ class UsuarioAdminAdapter(
                     }
                 )
 
-            // Configurar botón de acción según el rol
-            when (user.rol) {
-                "paciente" -> {
-                    binding.btnAccion.text = "Hacer fisio"
-                    binding.btnAccion.visibility = ViewGroup.VISIBLE
-                    binding.btnAccion.setOnClickListener { onPromover(user) }
-                }
-                "fisio" -> {
-                    binding.btnAccion.text = "Revocar"
-                    binding.btnAccion.visibility = ViewGroup.VISIBLE
-                    binding.btnAccion.setOnClickListener { onRevocar(user) }
-                }
-                else -> {
-                    // Admin no tiene botón de acción
-                    binding.btnAccion.visibility = ViewGroup.GONE
-                }
+            // Solo pacientes y fisios se pueden eliminar
+            // Los admins no tienen botón de eliminar
+            if (user.rol == "admin") {
+                binding.btnAccion.visibility = ViewGroup.GONE
+            } else {
+                binding.btnAccion.text = "Eliminar"
+                binding.btnAccion.visibility = ViewGroup.VISIBLE
+                binding.btnAccion.setOnClickListener { onEliminar(user) }
             }
         }
     }
@@ -90,11 +76,6 @@ class UsuarioAdminAdapter(
         holder.bind(getItem(position))
     }
 
-    /**
-     * DiffCallback para actualizaciones eficientes del RecyclerView.
-     * Compara por UID para identificar items y por contenido completo
-     * para detectar cambios de rol.
-     */
     class DiffCallback : DiffUtil.ItemCallback<User>() {
         override fun areItemsTheSame(old: User, new: User) = old.uid == new.uid
         override fun areContentsTheSame(old: User, new: User) = old == new

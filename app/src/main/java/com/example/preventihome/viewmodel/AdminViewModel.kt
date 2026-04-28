@@ -144,6 +144,29 @@ class AdminViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Elimina un usuario de Firebase Auth y de Firestore.
+     * Solo el administrador puede realizar esta operación.
+     * Después de eliminar recarga la lista actualizada.
+     *
+     * @param uid UID del usuario a eliminar
+     */
+    fun eliminarUsuario(uid: String) {
+        viewModelScope.launch {
+            _uiState.value = AdminUiState.Loading
+            userRepository.eliminarUsuario(uid)
+                .onSuccess {
+                    _uiState.value = AdminUiState.OperacionExitosa
+                    cargarUsuarios()
+                }
+                .onFailure {
+                    _uiState.value = AdminUiState.Error(
+                        it.message ?: "Error al eliminar usuario"
+                    )
+                }
+        }
+    }
+
     /** Resetea el estado a Idle después de manejar una operación */
     fun resetState() { _uiState.value = AdminUiState.Idle }
 }
