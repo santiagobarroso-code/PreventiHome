@@ -54,10 +54,27 @@ class FisioHomeFragment : Fragment() {
         binding.toolbar.subtitle = auth.currentUser?.email ?: ""
     }
 
+    /**
+     * Muestra el nombre del fisio en el header.
+     * Prioriza el nombre del perfil de Firestore sobre el email.
+     */
     private fun mostrarNombreFisio() {
-        val email = auth.currentUser?.email ?: ""
-        binding.tvBienvenidaFisio.text =
-            "Hola, ${email.substringBefore("@")}"
+        viewLifecycleOwner.lifecycleScope.launch {
+            val uid = auth.currentUser?.uid ?: return@launch
+            try {
+                val user = com.example.preventihome.data.remote.FirestoreSource(
+                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                ).getUser(uid)
+                val nombreMostrar = when {
+                    user.nombre.isNotEmpty() -> user.nombre
+                    else -> auth.currentUser?.email?.substringBefore("@") ?: "Fisioterapeuta"
+                }
+                binding.tvBienvenidaFisio.text = "Hola, $nombreMostrar"
+            } catch (e: Exception) {
+                val email = auth.currentUser?.email ?: ""
+                binding.tvBienvenidaFisio.text = "Hola, ${email.substringBefore("@")}"
+            }
+        }
     }
 
     private fun setupRecyclerView() {
