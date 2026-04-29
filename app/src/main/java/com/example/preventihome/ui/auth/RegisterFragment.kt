@@ -61,9 +61,23 @@ class RegisterFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.btnRegister.setOnClickListener {
-            val nombre = binding.etNombre.text.toString().trim()
-            val email = binding.etEmail.text.toString().trim()
+            val nombre   = binding.etNombre.text.toString().trim()
+            val email    = binding.etEmail.text.toString().trim()
             val password = binding.etPassword.text.toString().trim()
+
+            // Bloquear dominios reservados para fisios y admins
+            // Solo el administrador puede crear esas cuentas desde su panel
+            if (email.endsWith("@fisio.preventihome.com") ||
+                email.endsWith("@admin.preventihome.com")) {
+                Toast.makeText(
+                    requireContext(),
+                    "Ese dominio es de uso exclusivo del administrador. " +
+                            "Contacta al administrador para crear tu cuenta.",
+                    Toast.LENGTH_LONG
+                ).show()
+                return@setOnClickListener
+            }
+
             viewModel.register(email, password, nombre)
         }
 

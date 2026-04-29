@@ -120,6 +120,9 @@ class FisioHomeFragment : Fragment() {
         binding.btnVerCitas.setOnClickListener {
             findNavController().navigate(R.id.action_fisioHome_to_citasPendientes)
         }
+        binding.btnPerfil.setOnClickListener {
+            findNavController().navigate(R.id.action_fisioHome_to_perfilFisio)
+        }
     }
 
     override fun onDestroyView() {

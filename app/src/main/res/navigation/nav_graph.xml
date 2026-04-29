@@ -66,9 +66,23 @@
     </fragment>
 
     <fragment
+        android:id="@+id/perfilFisioFragment"
+        android:name="com.example.preventihome.ui.physio.PerfilFisioFragment"
+        android:label="Perfil Fisio">
+        <action
+            android:id="@+id/action_perfilFisio_to_login"
+            app:destination="@id/loginFragment"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
         android:id="@+id/fisioHomeFragment"
         android:name="com.example.preventihome.ui.physio.FisioHomeFragment"
         android:label="Home Fisio">
+        <action
+            android:id="@+id/action_fisioHome_to_perfilFisio"
+            app:destination="@id/perfilFisioFragment"/>
         <action
             android:id="@+id/action_fisioHome_to_login"
             app:destination="@id/loginFragment"

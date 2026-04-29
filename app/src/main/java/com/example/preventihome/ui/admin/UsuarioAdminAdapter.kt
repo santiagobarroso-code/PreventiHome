@@ -55,7 +55,10 @@ class UsuarioAdminAdapter(
 
             // Solo pacientes y fisios se pueden eliminar
             // Los admins no tienen botón de eliminar
-            if (user.rol == "admin") {
+            // Todos los usuarios tienen botón de eliminar excepto el usuario actual
+            val uidActual = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid
+
+            if (user.uid == uidActual) {
                 binding.btnAccion.visibility = ViewGroup.GONE
             } else {
                 binding.btnAccion.text = "Eliminar"
