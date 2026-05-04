@@ -27,7 +27,6 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Avatar circular con inicial -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -67,7 +66,6 @@
                     android:layout_marginTop="6dp"/>
             </LinearLayout>
 
-            <!-- Datos del usuario -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -149,7 +147,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Sección de actualización de datos -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -172,7 +169,6 @@
                         android:textColor="@color/primary"
                         android:layout_marginBottom="12dp"/>
 
-                    <!-- Campo para actualizar nombre -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilNuevoNombre"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -195,7 +191,6 @@
                         android:text="Actualizar nombre"
                         android:layout_marginBottom="16dp"/>
 
-                    <!-- Separador -->
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -203,7 +198,6 @@
                         android:alpha="0.2"
                         android:layout_marginBottom="16dp"/>
 
-                    <!-- Contraseña actual para verificación -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilPasswordActual"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -219,7 +213,6 @@
                             android:inputType="textPassword"/>
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <!-- Campos para cambiar contraseña -->
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/tilNuevaPassword"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -260,7 +253,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Botón cerrar sesión -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"

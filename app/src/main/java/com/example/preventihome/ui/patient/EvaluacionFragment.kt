@@ -18,15 +18,30 @@ import com.example.preventihome.viewmodel.ProgresoViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+/**
+ * Fragment encargado de evaluar un ejercicio realizado por el usuario.
+ *
+ * Permite:
+ * - Mostrar resumen del ejercicio realizado
+ * - Seleccionar una evaluación (bien, regular, mal)
+ * - Guardar el progreso en la base de datos
+ */
 @AndroidEntryPoint
 class EvaluacionFragment : Fragment() {
 
+    /** Binding para acceder a las vistas */
     private var _binding: FragmentEvaluacionBinding? = null
     private val binding get() = _binding!!
+
+    /** ViewModel encargado de guardar el progreso */
     private val viewModel: ProgresoViewModel by viewModels()
 
+    /** Valor de evaluación seleccionado por el usuario */
     private var evaluacionSeleccionada: String = ""
 
+    /**
+     * Infla el layout del fragment
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -34,6 +49,13 @@ class EvaluacionFragment : Fragment() {
         return binding.root
     }
 
+    /**
+     * Se ejecuta cuando la vista ha sido creada.
+     *
+     * - Recibe los datos del ejercicio desde el fragment anterior
+     * - Muestra información en pantalla
+     * - Configura evaluación y observer
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -45,8 +67,11 @@ class EvaluacionFragment : Fragment() {
         val series          = arguments?.getInt("series") ?: 0
         val repeticiones    = arguments?.getInt("repeticiones") ?: 0
 
-        // Mostrar info del ejercicio
+        /**
+         * Mostrar información del ejercicio en pantalla
+         */
         binding.tvNombreEjercicio.text = ejercicioNombre
+
         val minutos  = duracion / 60
         val segundos = duracion % 60
         binding.tvDuracion.text = "Duración: %02d:%02d min".format(minutos, segundos)
@@ -54,11 +79,20 @@ class EvaluacionFragment : Fragment() {
         setupEvaluacion()
         setupObserver()
 
+        /**
+         * Botón para guardar el progreso
+         */
         binding.btnGuardar.setOnClickListener {
+
+            // Validar que se haya seleccionado una evaluación
             if (evaluacionSeleccionada.isEmpty()) {
                 Toast.makeText(requireContext(), "Selecciona una evaluación", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
+            /**
+             * Crear objeto de progreso con los datos del ejercicio
+             */
             val progreso = Progreso(
                 ejercicioId      = ejercicioId,
                 ejercicioNombre  = ejercicioNombre,
@@ -68,70 +102,104 @@ class EvaluacionFragment : Fragment() {
                 series           = series,
                 repeticiones     = repeticiones
             )
+
+            // Guardar progreso en el ViewModel
             viewModel.guardarProgreso(progreso)
         }
     }
 
+    /**
+     * Configura los botones de evaluación.
+     */
     private fun setupEvaluacion() {
+
         binding.btnBien.setOnClickListener {
             seleccionarEvaluacion("bien", binding.btnBien)
         }
+
         binding.btnRegular.setOnClickListener {
             seleccionarEvaluacion("regular", binding.btnRegular)
         }
+
         binding.btnMal.setOnClickListener {
             seleccionarEvaluacion("mal", binding.btnMal)
         }
     }
 
+    /**
+     * Maneja la selección de evaluación.
+     *
+     * - Marca visualmente la opción seleccionada
+     * - Guarda el valor elegido
+     * - Actualiza el texto en pantalla
+     */
     private fun seleccionarEvaluacion(valor: String, vistaSeleccionada: View) {
-        // Deseleccionar todos
+
+        // Deseleccionar todos los botones
         binding.btnBien.isSelected    = false
         binding.btnRegular.isSelected = false
         binding.btnMal.isSelected     = false
 
-        // Seleccionar el tocado
+        // Seleccionar el botón presionado
         vistaSeleccionada.isSelected = true
         evaluacionSeleccionada = valor
 
+        // Mostrar texto descriptivo
         val texto = when (valor) {
             "bien"    -> "Seleccionaste: Bien 👍"
             "regular" -> "Seleccionaste: Regular 😐"
             "mal"     -> "Seleccionaste: Mal 👎"
             else      -> ""
         }
+
         binding.tvSeleccionada.text = texto
         binding.tvSeleccionada.visibility = View.VISIBLE
+
+        // Habilitar botón de guardar
         binding.btnGuardar.isEnabled = true
     }
 
+    /**
+     * Observa el estado del guardado del progreso.
+     *
+     * Maneja:
+     * - Loading
+     * - Guardado exitoso
+     * - Error
+     */
     private fun setupObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     when (state) {
+
                         is ProgresoUiState.Loading -> {
                             binding.progressBar.visibility = View.VISIBLE
                             binding.btnGuardar.isEnabled = false
                         }
+
                         is ProgresoUiState.Guardado -> {
                             binding.progressBar.visibility = View.GONE
+
                             Toast.makeText(
                                 requireContext(),
                                 "¡Progreso guardado!",
                                 Toast.LENGTH_SHORT
                             ).show()
+
                             // Volver al home del paciente
                             findNavController().popBackStack(
                                 com.example.preventihome.R.id.patientHomeFragment,
                                 false
                             )
                         }
+
                         is ProgresoUiState.Error -> {
                             binding.progressBar.visibility = View.GONE
                             binding.btnGuardar.isEnabled = true
                             Toast.makeText(requireContext(), state.message, Toast.LENGTH_LONG).show()
                         }
+
                         else -> Unit
                     }
                 }
@@ -139,6 +207,9 @@ class EvaluacionFragment : Fragment() {
         }
     }
 
+    /**
+     * Limpia el binding para evitar memory leaks
+     */
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

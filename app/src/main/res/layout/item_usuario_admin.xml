@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Item de usuario para el panel de administrador.
-     Muestra avatar, nombre, correo, rol y botón de acción. -->
+
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -18,7 +17,6 @@
         android:padding="12dp"
         android:gravity="center_vertical">
 
-        <!-- Avatar con inicial del usuario -->
         <TextView
             android:id="@+id/tvAvatar"
             android:layout_width="40dp"
@@ -30,7 +28,6 @@
             android:background="@drawable/bg_avatar"
             android:layout_marginEnd="12dp"/>
 
-        <!-- Información del usuario -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -53,7 +50,6 @@
                 android:textColor="@color/text_secondary"
                 android:layout_marginTop="2dp"/>
 
-            <!-- Badge de rol con color diferenciado -->
             <TextView
                 android:id="@+id/tvRol"
                 android:layout_width="wrap_content"
@@ -67,7 +63,6 @@
 
         </LinearLayout>
 
-        <!-- Botón de acción contextual según el rol -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAccion"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"

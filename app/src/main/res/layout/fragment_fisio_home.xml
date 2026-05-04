@@ -15,7 +15,6 @@
         app:title="Panel Fisioterapeuta"
         app:titleTextColor="@color/white"/>
 
-    <!-- Header con info del fisio -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,7 +42,6 @@
 
     </LinearLayout>
 
-    <!-- Título lista -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -98,7 +96,6 @@
         android:layout_marginHorizontal="16dp"
         android:layout_marginBottom="8dp"/>
 
-    <!-- Botón cerrar sesión -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogout"
         android:layout_width="match_parent"

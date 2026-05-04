@@ -16,7 +16,6 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
-        <!-- Badge de zona -->
         <TextView
             android:id="@+id/tvZona"
             android:layout_width="wrap_content"
@@ -30,7 +29,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
-        <!-- Badge recomendado -->
         <TextView
             android:id="@+id/tvRecomendado"
             android:layout_width="wrap_content"
@@ -47,7 +45,6 @@
             app:layout_constraintStart_toEndOf="@id/tvZona"
             android:layout_marginStart="6dp"/>
 
-        <!-- Nombre del ejercicio -->
         <TextView
             android:id="@+id/tvNombre"
             android:layout_width="0dp"
@@ -60,7 +57,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="10dp"/>
 
-        <!-- Descripción corta -->
         <TextView
             android:id="@+id/tvDescripcion"
             android:layout_width="0dp"
@@ -74,7 +70,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="4dp"/>
 
-        <!-- Series y repeticiones -->
         <TextView
             android:id="@+id/tvSeriesReps"
             android:layout_width="0dp"
@@ -86,7 +81,6 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="8dp"/>
 
-        <!-- Botón ver detalle -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnVerDetalle"
             style="@style/Widget.MaterialComponents.Button.TextButton"

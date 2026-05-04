@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Pantalla del paciente para ver y agendar citas.
-     Muestra citas activas y botón para agendar nueva. -->
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -46,7 +45,6 @@
         android:paddingBottom="80dp"
         android:clipToPadding="false"/>
 
-    <!-- FAB para agendar nueva cita -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabNuevaCita"
         android:layout_width="wrap_content"

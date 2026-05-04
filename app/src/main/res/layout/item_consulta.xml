@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Item de consulta para listas en el fisio y en el paciente.
-     Muestra patología, fecha, diagnóstico y estado. -->
+
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,7 +16,6 @@
         android:orientation="vertical"
         android:padding="14dp">
 
-        <!-- Fila superior: patología + estado -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,7 +44,6 @@
 
         </LinearLayout>
 
-        <!-- Diagnóstico -->
         <TextView
             android:id="@+id/tvDiagnostico"
             android:layout_width="match_parent"
@@ -57,7 +54,6 @@
             android:ellipsize="end"
             android:layout_marginBottom="6dp"/>
 
-        <!-- Notas de seguimiento -->
         <TextView
             android:id="@+id/tvNotas"
             android:layout_width="match_parent"
@@ -70,7 +66,6 @@
             android:layout_marginBottom="8dp"
             android:visibility="gone"/>
 
-        <!-- Fecha de la consulta -->
         <TextView
             android:id="@+id/tvFecha"
             android:layout_width="wrap_content"

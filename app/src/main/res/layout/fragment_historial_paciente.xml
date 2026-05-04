@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Detalle de una consulta vista por el paciente.
-     Muestra diagnóstico completo, patología, notas y ejercicios asignados. -->
+
 <androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -29,7 +28,6 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Badge de patología -->
             <TextView
                 android:id="@+id/tvPatologiaDetalle"
                 android:layout_width="wrap_content"
@@ -42,7 +40,6 @@
                 android:backgroundTint="@color/secondary"
                 android:layout_marginBottom="16dp"/>
 
-            <!-- Sección diagnóstico -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -61,7 +58,6 @@
                 android:lineSpacingMultiplier="1.4"
                 android:layout_marginBottom="20dp"/>
 
-            <!-- Sección notas del fisio -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -88,7 +84,6 @@
                     android:text="Sin notas aún"/>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Fecha y fisioterapeuta -->
             <TextView
                 android:id="@+id/tvFechaDetalle"
                 android:layout_width="wrap_content"
